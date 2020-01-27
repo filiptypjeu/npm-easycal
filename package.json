@@ -1,0 +1,47 @@
+{
+    "name": "easycal",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc",
+        "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+        "lint": "tslint -p tsconfig.json",
+        "lint-fix": "tslint -p tsconfig.json --fix",
+        "test": "jest --config jestconfig.json",
+        "prepare": "npm run build",
+        "prepublishOnly": "npm test && npm run lint",
+        "preversion": "npm run lint",
+        "version": "npm run format && git add -A src",
+        "postversion": "git push && git push --tags"
+    },
+    "author": "Filip Stenbacka",
+    "license": "ISC",
+    "types": "dist/index.d.ts",
+    "devDependencies": {
+        "@types/cheerio": "^0.22.15",
+        "@types/jest": "^24.0.23",
+        "jest": "^24.9.0",
+        "prettier": "^1.19.1",
+        "ts-jest": "^24.2.0",
+        "tslint": "^5.20.1",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^3.7.2"
+    },
+    "dependencies": {
+        "cheerio": "^1.0.0-rc.3",
+        "node-ical": "^0.10.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:filiptypjeu/npm-easycal.git"
+    },
+    "files": [
+        "dist/**/*"
+    ],
+    "keywords": [
+        "calendar",
+        "ical",
+        "events"
+    ]
+}
