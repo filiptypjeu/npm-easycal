@@ -5,7 +5,9 @@ export const getEvents = (url: string): Promise<ICalendarResponse> => {
 
   return new Promise((resolve, reject) => {
     fromURL(url, {}, (err: any, data) => {
-      if (err) { return reject(new Error(`getEvents * ${err}`)); }
+      if (err) {
+        return reject(new Error(`getEvents * ${err}`));
+      }
 
       const events: ICalendarResponse = {
         past: [],
@@ -17,7 +19,7 @@ export const getEvents = (url: string): Promise<ICalendarResponse> => {
         if (data[k].type !== "VEVENT") {
           continue;
         }
-        
+
         const ev = data[k];
         const startDate = new Date(ev.start);
         const endDate = ev.end ? new Date(ev.end) : new Date(startDate.setHours(startDate.getHours() + 1));
@@ -29,7 +31,7 @@ export const getEvents = (url: string): Promise<ICalendarResponse> => {
           location: ev.location,
           start: startDate,
           end: endDate,
-        }
+        };
 
         if (dateNow > endDate) {
           events.past.push(event);
