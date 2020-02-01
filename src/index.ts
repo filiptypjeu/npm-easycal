@@ -1,5 +1,5 @@
-import { fromURL } from "node-ical";
 import moment from "moment";
+import { fromURL } from "node-ical";
 
 export const getEvents = (url: string): Promise<ICalendarResponse> => {
   const dateNow = new Date();
@@ -51,7 +51,7 @@ export const getEvents = (url: string): Promise<ICalendarResponse> => {
 export const groupByStartDate = (events: ICalendarEvent[]) => {
   const m = new Map<string, ICalendarEvent[]>();
   events.forEach(e => {
-    const startDate = moment(new Date(e.start)).format('YYYY-MM-DD');
+    const startDate = moment(new Date(e.start)).format("YYYY-MM-DD");
     m.set(startDate, (m.get(startDate) || []).concat(e));
   });
 
