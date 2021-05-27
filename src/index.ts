@@ -14,6 +14,7 @@ export const getEvents = (url: string): Promise<ICalendarResponse> => {
         past: [],
         ongoing: [],
         future: [],
+        invalid: [],
       };
 
       for (const k in data) {
@@ -23,7 +24,9 @@ export const getEvents = (url: string): Promise<ICalendarResponse> => {
 
         const ev = data[k] as VEvent;
 
-        if (dateNow > ev.end) {
+        if (!ev.end || !ev.start) {
+          events.invalid.push(ev);
+        } else if (dateNow > ev.end) {
           events.past.push(ev);
         } else if (dateNow < ev.start) {
           events.future.push(ev);
@@ -51,4 +54,5 @@ export interface ICalendarResponse {
   past: VEvent[];
   ongoing: VEvent[];
   future: VEvent[];
+  invalid: VEvent[];
 }
