@@ -1,5 +1,5 @@
 import moment from "moment";
-import { fromURL } from "node-ical";
+import { fromURL, VEvent } from "node-ical";
 
 export const getEvents = (url: string): Promise<ICalendarResponse> => {
   const dateNow = new Date();
@@ -21,25 +21,14 @@ export const getEvents = (url: string): Promise<ICalendarResponse> => {
           continue;
         }
 
-        const ev = data[k];
-        const startDate = new Date(ev.start);
-        const endDate = ev.end ? new Date(ev.end) : new Date(startDate.setHours(startDate.getHours() + 1));
+        const ev = data[k] as VEvent;
 
-        const event: ICalendarEvent = {
-          summary: ev.summary,
-          description: ev.description.val,
-          contact: ev.contact,
-          location: ev.location,
-          start: startDate,
-          end: endDate,
-        };
-
-        if (dateNow > endDate) {
-          events.past.push(event);
-        } else if (dateNow < startDate) {
-          events.future.push(event);
+        if (dateNow > ev.end) {
+          events.past.push(ev);
+        } else if (dateNow < ev.start) {
+          events.future.push(ev);
         } else {
-          events.ongoing.push(event);
+          events.ongoing.push(ev);
         }
       }
 
@@ -48,8 +37,8 @@ export const getEvents = (url: string): Promise<ICalendarResponse> => {
   });
 };
 
-export const groupByStartDate = (events: ICalendarEvent[]) => {
-  const m = new Map<string, ICalendarEvent[]>();
+export const groupByStartDate = (events: VEvent[]) => {
+  const m = new Map<string, VEvent[]>();
   events.forEach(e => {
     const startDate = moment(new Date(e.start)).format("YYYY-MM-DD");
     m.set(startDate, (m.get(startDate) || []).concat(e));
@@ -58,17 +47,8 @@ export const groupByStartDate = (events: ICalendarEvent[]) => {
   return m;
 };
 
-export interface ICalendarEvent {
-  summary: string;
-  description: string;
-  contact: string;
-  location: string;
-  start: Date;
-  end: Date;
-}
-
-interface ICalendarResponse {
-  past: ICalendarEvent[];
-  ongoing: ICalendarEvent[];
-  future: ICalendarEvent[];
+export interface ICalendarResponse {
+  past: VEvent[];
+  ongoing: VEvent[];
+  future: VEvent[];
 }
